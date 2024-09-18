@@ -23,7 +23,7 @@ const themes = JSON.parse(fs.readFileSync("themes.json", "utf-8"));
 // Convert JSON color format into Termux color definition
 function convertJsonTheme(theme) {
   const formatTx = [
-    `#${theme.name} | (c) Gogh <https://github.com/Gogh-Co/Gogh/blob/master/LICENSE>`,
+    `# ${theme.name} | (c) Gogh <https://github.com/Gogh-Co/Gogh/blob/master/LICENSE>`,
     `foreground=${theme.foreground}`,
     `background=${theme.background}`,
     `cursor=${theme.cursor}`,
