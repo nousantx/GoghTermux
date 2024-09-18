@@ -2,7 +2,7 @@
 
 Now you can use [Gogh Color](https://github.com/Gogh-Co/Gogh) in termux app with this simple setup.
 
-## Steps
+## Installation
 
 ### Clone this Repository
 
@@ -34,28 +34,84 @@ The default output directory is `./colors`, and you may need to list with `ls` c
 
 ## Set Color Scheme
 
-After the colors is generated, you can use the `setcolor.sh` script to apply the color you desired:
+```
+▶ ./setcolor.sh help
+Usage:
+  setcolor.sh -l | --list               # List all available color schemes
+  setcolor.sh -n | --number <number>    # Apply a color scheme by number
+  setcolor.sh -f | --file <color_file>  # Apply a specific color file
+  setcolor.sh -h | --help               # Show this help message
 
-```sh
-sh setcolor.sh
-# or
-bash setcolor.sh
+Examples:
+  setcolor.sh -l
+  setcolor.sh -n 2
+  setcolor.sh -f ./colors/tokyo-night.properties
 ```
 
-After running the scripts, you will get all color schemes list with its number, you can type the number of the color scheme you want.
+The **Set Color Scheme** script lets you easily change the color scheme of your Termux environment. You can list available color schemes, select a scheme by number, or apply one directly from a file. Below is a quick guide to its usage.
 
-You can also find the color name in the [official Gogh website](https://gogh-co.github.io/Gogh).
+### Usage
 
-Tips: You can also make it easier to find exact color name with `grep` command, example:
-
-```sh
-# bash setcolor.sh | grep <color_name>
-bash setcolor.sh | grep tokyo
+```bash
+setcolor.sh [options]
 ```
 
-And then wait a bit for the script to run and showing the `Enter a number` section, and done!
+#### Options:
 
-### Manual Installation
+- **`-l | --list | list`**  
+  Lists all available color schemes.
+
+- **`-n <number> | --number <number>`**  
+  Applies a color scheme by choosing a number from the list.
+
+- **`-f <file> | --file <file> | file <file>`**  
+  Applies a specific color scheme by giving the path to a `.properties` file.
+
+- **`-h | --help | help`**  
+  Shows this help message.
+
+
+### Examples
+
+1. **List available color schemes:**
+
+   ```bash
+   ./setcolor.sh -l
+   ```
+
+2. **Apply a color scheme by number:**
+
+   ```bash
+   ./setcolor.sh -n 1
+   ```
+
+3. **Apply a color scheme from a file:**
+
+   ```bash
+   ./setcolor.sh -f ./colors/dracula.properties
+   ```
+
+4. **Show the help message:**
+
+   ```bash
+   ./setcolor.sh -h
+   ```
+
+5. **Interactive mode (choose a color scheme by number):**
+   ```bash
+   ./setcolor.sh
+   ```
+
+### How It Works
+
+- **List**: Displays all color schemes in the specified directory, formatted for easy reading, with corresponding numbers.
+- **Apply by Number**: Selects a color scheme using the number from the list.
+- **Apply by File**: Directly applies a color scheme by specifying the full file path.
+- **Interactive Mode**: If no options are provided, you can interactively choose a color scheme by entering its number.
+
+This script makes it easy to customize your Termux terminal colors with just a few simple commands.
+
+## Manual Installation
 
 Let's say you can't run the `setcolor.sh` file, you can manually install the color like this:
 
@@ -72,6 +128,6 @@ cp colors/zenburn.properties ~/.termux/colors.properties
 
 And then, you need to run `termux-reload-settings` command to load new color scheme.
 
-### Get the Latest `themes.json` File (optional)
+## Get the Latest `themes.json` File (optional)
 
 This repository also contains `themes.json` file, but it may be updated again in the future, so you can always find the newest version [here](https://github.com/Gogh-Co/Gogh/blob/master/data/themes.json).
