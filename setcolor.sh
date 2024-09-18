@@ -4,15 +4,21 @@ DIR=$(
   cd "$(dirname "$0")"
   pwd
 )
-COLORS_DIR="$HOME/.termux/colors"
+COLORS_DIR="./output_examples"
 count=0
+
+# Color helper
+GREEN="\e[32m"
+YELLOW="\e[33m"
+RED="\e[31m"
+RESET="\e[0m"
 
 # Function to apply color scheme
 apply_color_scheme() {
   local scheme="$1"
   cp -fr "$scheme" "/data/data/com.termux/files/home/.termux/colors.properties"
   termux-reload-settings
-  echo -e "\e[32mApplied color scheme: $scheme\e[0m"
+  echo -e "${GREEN}Applied color scheme: $scheme${RESET}"
   exit 0
 }
 
@@ -26,13 +32,28 @@ format_scheme_name() {
 
 # Function to list available color schemes
 list_schemes() {
-  echo "Available color schemes:"
+  echo -e "${YELLOW}Available color schemes:${RESET}"
   count=0
   for colors in "$COLORS_DIR"/*; do
-    scheme_name=$(format_scheme_name "$colors") # Format the scheme name
-    echo -e "(\e[33m$count\e[0m) $scheme_name"
+    scheme_name=$(format_scheme_name "$colors")
+    echo -e "(${YELLOW}$count${RESET}) $scheme_name"
     count=$((count + 1))
   done
+  exit 0
+}
+
+# Function to display help message
+show_help() {
+  echo -e "${YELLOW}Usage:${RESET}"
+  echo -e "  setcolor.sh                           # Interactive mode"
+  echo -e "  setcolor.sh ${YELLOW}-l | --list${RESET}               # List all available color schemes"
+  echo -e "  setcolor.sh ${YELLOW}-n | --number <number>${RESET}    # Apply a color scheme by number"
+  echo -e "  setcolor.sh ${YELLOW}-f | --file <color_file>${RESET}  # Apply a specific color file"
+  echo -e "  setcolor.sh ${YELLOW}-h | --help${RESET}               # Show this help message"
+  echo -e "\n${YELLOW}Examples:${RESET}"
+  echo -e "  setcolor.sh ${YELLOW}-l${RESET}"
+  echo -e "  setcolor.sh ${YELLOW}-n 2${RESET}"
+  echo -e "  setcolor.sh ${YELLOW}-f ./colors/tokyo-night.properties${RESET}"
   exit 0
 }
 
@@ -40,15 +61,7 @@ list_schemes() {
 if [ $# -gt 0 ]; then
   case "$1" in
     -h | --help | help)
-      echo -e "\e[33mUsage:\e[0m"
-      echo -e "\e[2msetcolor.sh\e[0m \e[33m-l | --list | list\e[0m"
-      echo -e "\e[2msetcolor.sh\e[0m \e[33m-n | --number <number>\e[0m"
-      echo -e "\e[2msetcolor.sh\e[0m \e[33m-f | --file | file <color_file>\e[0m"
-      echo -e "\n\e[33mExample:\e[0m"
-      echo -e "\e[2msetcolor.sh\e[0m \e[33m-l\e[0m"
-      echo -e "\e[2msetcolor.sh\e[0m \e[33m-n 42\e[0m"
-      echo -e "\e[2msetcolor.sh\e[0m \e[33m-f ./colors/tokyo-night.properties\e[0m"
-      exit 1
+      show_help
       ;;
     -l | --list | list)
       list_schemes
@@ -61,10 +74,10 @@ if [ $# -gt 0 ]; then
           fi
           count=$((count + 1))
         done
-        echo -e "\e[31mError: Color scheme number $2 not found.\e[0m"
+        echo -e "${RED}Error: Color scheme number $2 not found.${RESET}"
         exit 1
       else
-        echo -e "\e[31mError: Please provide a valid number after -n or --number.\e[0m"
+        echo -e "${RED}Error: Please provide a valid number after -n or --number.${RESET}"
         exit 1
       fi
       ;;
@@ -72,26 +85,28 @@ if [ $# -gt 0 ]; then
       if [ -f "$2" ]; then
         apply_color_scheme "$2"
       else
-        echo -e "\e[31mError: Invalid file or path. Please provide a valid color file.\e[0m"
+        echo -e "${RED}Error: Invalid file or path. Please provide a valid color file.${RESET}"
         exit 1
       fi
       ;;
     *)
-      echo -e "\e[31mError: Unknown option '$1'. Use '-h | --help | help' flag for available options."
-
+      echo -e "${RED}Error: Unknown option '$1'. Use '-h | --help | help' flag for available options.${RESET}"
       exit 1
       ;;
   esac
 fi
 
 # If no argument, proceed with interactive selection
-echo -e "Choose scheme you want to use from the list below:"
+echo -e "Choose a scheme you want to use from the list below:"
 declare -a colors_name
+declare -a colors_files
 for colors in "$COLORS_DIR"/*; do
   colors_name[count]=$(format_scheme_name "$colors")
-  echo -e "(\e[33m$count\e[0m) ${colors_name[count]}"
+  colors_files[count]="$colors"
+  echo -e "(${YELLOW}$count${RESET}) ${colors_name[count]}"
   count=$((count + 1))
 done
+
 count=$((count - 1))
 
 while true; do
@@ -99,11 +114,10 @@ while true; do
   if [[ -z "$number" ]]; then
     break
   elif ! [[ "$number" =~ ^[0-9]+$ ]]; then
-    echo -e "\e[31mPlease enter the correct number!\e[0m"
+    echo -e "${RED}Please enter a valid number!${RESET}"
   elif ((number >= 0 && number <= count)); then
-    choice="${colors_name[number]}"
-    apply_color_scheme "$COLORS_DIR/$choice.properties"
+    apply_color_scheme "${colors_files[number]}"
   else
-    echo -e "\e[31mPlease enter the correct number!\e[0m"
+    echo -e "${RED}Please enter a valid number!${RESET}"
   fi
 done
