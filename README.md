@@ -1,6 +1,6 @@
-# Gogh for Termux
+# Gogh Color Schemes for Termux
 
-Now you can use [Gogh Color](https://github.com/Gogh-Co/Gogh) in termux app with this simple setup.
+Now you can use [Gogh Color Schemes](https://github.com/Gogh-Co/Gogh) in termux app with this simple setup.
 
 ## Installation
 
